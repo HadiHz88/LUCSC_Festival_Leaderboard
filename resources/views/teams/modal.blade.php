@@ -4,79 +4,86 @@
 
 @section('content')
     <div class="max-w-2xl mx-auto">
-        <div class="bg-white rounded-lg shadow p-6">
-            <h2 class="text-2xl font-bold mb-6">Edit Team</h2>
+        <div class="bg-white rounded-lg shadow-lg p-8 transform transition-all duration-300 hover:shadow-xl">
+            <h2 class="text-3xl font-bold mb-8 text-gray-800">Edit Team</h2>
 
-            <form action="{{ route('teams.update', $team->slug) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('teams.update', $team->slug) }}" method="POST" enctype="multipart/form-data"
+                class="space-y-6">
                 @csrf
                 @method('PUT')
 
-                <div class="mb-4">
-                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Team Name</label>
-                    <input type="text" name="name" id="name" value="{{ $team->name }}"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required>
-                </div>
+                <div class="space-y-6">
+                    <div class="transform transition-all duration-200 hover:scale-[1.01]">
+                        <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Team Name</label>
+                        <input type="text" name="name" id="name" value="{{ $team->name }}"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                            required>
+                    </div>
 
-                <div class="mb-4">
-                    <label for="slug" class="block text-sm font-medium text-gray-700 mb-1">Slug</label>
-                    <input type="text" name="slug" id="slug" value="{{ $team->slug }}"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required>
-                </div>
+                    <div class="transform transition-all duration-200 hover:scale-[1.01]">
+                        <label for="slug" class="block text-sm font-medium text-gray-700 mb-2">Slug</label>
+                        <input type="text" name="slug" id="slug" value="{{ $team->slug }}"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                            required>
+                    </div>
 
-                <div class="mb-4">
-                    <label for="games_played" class="block text-sm font-medium text-gray-700 mb-1">Games Played</label>
-                    <input type="number" name="games_played" id="games_played" value="{{ $team->games_played }}"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        min="0" required>
-                </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="transform transition-all duration-200 hover:scale-[1.01]">
+                            <label for="games_played" class="block text-sm font-medium text-gray-700 mb-2">Games
+                                Played</label>
+                            <input type="number" name="games_played" id="games_played" value="{{ $team->games_played }}"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                min="0" required>
+                        </div>
 
-                <div class="mb-4">
-                    <label for="wins" class="block text-sm font-medium text-gray-700 mb-1">Wins</label>
-                    <input type="number" name="wins" id="wins" value="{{ $team->wins }}"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        min="0" max="{{ $team->games_played }}" required>
-                </div>
+                        <div class="transform transition-all duration-200 hover:scale-[1.01]">
+                            <label for="wins" class="block text-sm font-medium text-gray-700 mb-2">Wins</label>
+                            <input type="number" name="wins" id="wins" value="{{ $team->wins }}"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                min="0" max="{{ $team->games_played }}" required>
+                        </div>
 
-                <div class="mb-4">
-                    <label for="points" class="block text-sm font-medium text-gray-700 mb-1">Points</label>
-                    <input type="number" name="points" id="points" value="{{ $team->points }}"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        min="0" required>
-                </div>
+                        <div class="transform transition-all duration-200 hover:scale-[1.01]">
+                            <label for="points" class="block text-sm font-medium text-gray-700 mb-2">Points</label>
+                            <input type="number" name="points" id="points" value="{{ $team->points }}"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                min="0" required>
+                        </div>
+                    </div>
 
-                <div class="mb-4">
-                    <label for="logo" class="block text-sm font-medium text-gray-700 mb-1">Team Logo</label>
-                    <input type="file" name="logo" id="logo"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        accept="image/*">
-                    <div class="mt-2">
-                        <div class="flex items-center space-x-4">
-                            <div
-                                class="h-20 w-20 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
-                                @if ($team->logo && Storage::disk('public')->exists($team->logo))
-                                    <img src="{{ asset('storage/' . $team->logo) }}" alt="{{ $team->name }}"
-                                        class="h-full w-full object-cover"
-                                        onerror="this.parentElement.innerHTML='<div class=\'text-gray-400 text-2xl\'>{{ substr($team->name, 0, 1) }}</div>'">
-                                @else
-                                    <div class="text-gray-400 text-2xl">{{ substr($team->name, 0, 1) }}</div>
-                                @endif
-                            </div>
-                            <div class="text-sm text-gray-500">
-                                Current logo will be replaced when a new one is uploaded
+                    <div class="transform transition-all duration-200 hover:scale-[1.01]">
+                        <label for="logo" class="block text-sm font-medium text-gray-700 mb-2">Team Logo</label>
+                        <div class="mt-2">
+                            <div class="flex items-center space-x-6">
+                                <div
+                                    class="h-24 w-24 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center overflow-hidden shadow-md transform transition-all duration-300 hover:scale-105">
+                                    @if ($team->logo && Storage::disk('public')->exists($team->logo))
+                                        <img src="{{ asset('storage/' . $team->logo) }}" alt="{{ $team->name }}"
+                                            class="h-full w-full object-cover transition-transform duration-300 hover:scale-110"
+                                            onerror="this.parentElement.innerHTML='<div class=\'text-gray-500 text-3xl font-medium\'>{{ substr($team->name, 0, 1) }}</div>'">
+                                    @else
+                                        <div class="text-gray-500 text-3xl font-medium">{{ substr($team->name, 0, 1) }}
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="flex-1">
+                                    <input type="file" name="logo" id="logo"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                        accept="image/*">
+                                    <p class="mt-2 text-sm text-gray-500">Upload a new logo to replace the current one</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="flex justify-end space-x-4">
+                <div class="flex justify-end space-x-4 pt-6">
                     <a href="{{ route('teams.index') }}"
-                        class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 transform hover:scale-105">
                         Cancel
                     </a>
                     <button type="submit"
-                        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 transform hover:scale-105">
                         Save Changes
                     </button>
                 </div>
