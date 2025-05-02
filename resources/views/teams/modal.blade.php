@@ -1,101 +1,86 @@
-@php
-    $isEditMode = isset($editMode) && $editMode;
-@endphp
+@extends('layouts.app')
 
-<div class="space-y-6">
-    @if ($isEditMode)
-        <form id="editTeamForm" action="{{ route('teams.update', $team->slug) }}" method="POST"
-            enctype="multipart/form-data">
-            @csrf
-            @method('PUT')
-            <div class="space-y-4">
-                <div>
-                    <label for="edit_name" class="block text-sm font-medium text-gray-700">Team
-                        Name</label>
-                    <input type="text" name="name" id="edit_name" value="{{ $team->name }}" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+@section('title', 'Edit Team - LUCSC Festival')
+
+@section('content')
+    <div class="max-w-2xl mx-auto">
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-2xl font-bold mb-6">Edit Team</h2>
+
+            <form action="{{ route('teams.update', $team->slug) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+
+                <div class="mb-4">
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Team Name</label>
+                    <input type="text" name="name" id="name" value="{{ $team->name }}"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required>
                 </div>
-                <div>
-                    <label for="edit_slug" class="block text-sm font-medium text-gray-700">Slug</label>
-                    <input type="text" name="slug" id="edit_slug" value="{{ $team->slug }}" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+
+                <div class="mb-4">
+                    <label for="slug" class="block text-sm font-medium text-gray-700 mb-1">Slug</label>
+                    <input type="text" name="slug" id="slug" value="{{ $team->slug }}"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required>
                 </div>
-                <div>
-                    <label for="edit_logo" class="block text-sm font-medium text-gray-700">Team
-                        Logo</label>
-                    <input type="file" name="logo" id="edit_logo" accept="image/*" class="mt-1 block w-full">
+
+                <div class="mb-4">
+                    <label for="games_played" class="block text-sm font-medium text-gray-700 mb-1">Games Played</label>
+                    <input type="number" name="games_played" id="games_played" value="{{ $team->games_played }}"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        min="0" required>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Games Played</label>
-                        <p class="mt-1 text-gray-900">{{ $team->games_played }}</p>
+
+                <div class="mb-4">
+                    <label for="wins" class="block text-sm font-medium text-gray-700 mb-1">Wins</label>
+                    <input type="number" name="wins" id="wins" value="{{ $team->wins }}"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        min="0" max="{{ $team->games_played }}" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="points" class="block text-sm font-medium text-gray-700 mb-1">Points</label>
+                    <input type="number" name="points" id="points" value="{{ $team->points }}"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        min="0" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="logo" class="block text-sm font-medium text-gray-700 mb-1">Team Logo</label>
+                    <input type="file" name="logo" id="logo"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        accept="image/*">
+                    <div class="mt-2">
+                        <div class="flex items-center space-x-4">
+                            <div
+                                class="h-20 w-20 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
+                                @if ($team->logo && Storage::disk('public')->exists($team->logo))
+                                    <img src="{{ asset('storage/' . $team->logo) }}" alt="{{ $team->name }}"
+                                        class="h-full w-full object-cover"
+                                        onerror="this.parentElement.innerHTML='<div class=\'text-gray-400 text-2xl\'>{{ substr($team->name, 0, 1) }}</div>'">
+                                @else
+                                    <div class="text-gray-400 text-2xl">{{ substr($team->name, 0, 1) }}</div>
+                                @endif
+                            </div>
+                            <div class="text-sm text-gray-500">
+                                Current logo will be replaced when a new one is uploaded
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Points</label>
-                        <p class="mt-1 text-gray-900">{{ $team->points }}</p>
-                    </div>
                 </div>
+
                 <div class="flex justify-end space-x-4">
-                    <x-button variant="secondary" type="button" onclick="closeTeamModal()">
+                    <a href="{{ route('teams.index') }}"
+                        class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         Cancel
-                    </x-button>
-                    <x-button type="submit">
+                    </a>
+                    <button type="submit"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         Save Changes
-                    </x-button>
+                    </button>
                 </div>
-            </div>
-        </form>
-    @else
-        <div class="space-y-6">
-            <div class="flex items-center space-x-4">
-                @if ($team->logo)
-                    <img src="{{ asset('storage/' . $team->logo) }}" alt="{{ $team->name }}"
-                        class="w-24 h-24 rounded-full">
-                @else
-                    <div class="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center">
-                        <span class="text-4xl text-gray-500">{{ substr($team->name, 0, 1) }}</span>
-                    </div>
-                @endif
-                <div>
-                    <h3 class="text-2xl font-bold">{{ $team->name }}</h3>
-                    <p class="text-gray-600">Slug: {{ $team->slug }}</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Games Played</label>
-                    <p class="mt-1 text-gray-900">{{ $team->games_played }}</p>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Points</label>
-                    <p class="mt-1 text-gray-900">{{ $team->points }}</p>
-                </div>
-            </div>
-
-            <div class="flex justify-end space-x-4">
-                <form action="{{ route('teams.destroy', $team->slug) }}" method="POST" class="inline">
-                    @csrf
-                    @method('DELETE')
-                    <x-button variant="danger" type="submit"
-                        onclick="return confirm('Are you sure you want to delete this team?')">
-                        Delete Team
-                    </x-button>
-                </form>
-                <x-button onclick="loadEditForm('{{ $team->slug }}')">
-                    Edit Team
-                </x-button>
-            </div>
+            </form>
         </div>
-    @endif
-</div>
-
-<script>
-    function loadEditForm(slug) {
-        fetch(`/teams/${slug}/modal?edit=1`)
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('teamModalContent').innerHTML = html;
-            });
-    }
-</script>
+    </div>
+@endsection

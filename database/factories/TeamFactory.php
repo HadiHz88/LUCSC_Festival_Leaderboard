@@ -19,7 +19,6 @@ class TeamFactory extends Factory
         return [
             'name' => $this->faker->unique()->company(),
             'slug' => $this->faker->unique()->slug(),
-            'logo' => $this->faker->imageUrl(640, 480, 'business'),
         ];
     }
 }

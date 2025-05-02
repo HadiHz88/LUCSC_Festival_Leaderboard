@@ -89,6 +89,9 @@ class TeamController extends Controller
             'name' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:teams,slug,' . $slug,
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'games_played' => 'required|integer|min:0',
+            'wins' => 'required|integer|min:0|lte:games_played',
+            'points' => 'required|integer|min:0'
         ]);
 
         // Fetch the team by slug
@@ -97,6 +100,9 @@ class TeamController extends Controller
         // Update the team
         $team->name = $request->name;
         $team->slug = $request->slug;
+        $team->games_played = $request->games_played;
+        $team->wins = $request->wins;
+        $team->points = $request->points;
 
         // Handle logo upload
         if ($request->hasFile('logo')) {

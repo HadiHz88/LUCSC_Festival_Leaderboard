@@ -5,7 +5,8 @@ use App\Http\Controllers\TeamController;
 use App\Http\Controllers\LeaderboardController;
 
 Route::get('/', function () {
-    return view('welcome');
+    // temporary redirect
+    return redirect('/leaderboard');
 });
 
 Route::get('/teams', [TeamController::class, 'index'])->name('teams.index');
