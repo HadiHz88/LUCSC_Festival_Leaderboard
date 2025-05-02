@@ -20,9 +20,6 @@ class TeamFactory extends Factory
             'name' => $this->faker->unique()->company(),
             'slug' => $this->faker->unique()->slug(),
             'logo' => $this->faker->imageUrl(640, 480, 'business'),
-            'points' => $this->faker->numberBetween(0, 100),
-            'wins' => $this->faker->numberBetween(0, 50),
-            'games_played' => $this->faker->numberBetween(1, 100),
         ];
     }
 }

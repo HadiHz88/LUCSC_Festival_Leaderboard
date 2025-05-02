@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\LeaderboardController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -15,3 +16,6 @@ Route::post('/teams', [TeamController::class, 'store'])->name('teams.store');
 Route::get('/teams/{slug}/edit', [TeamController::class, 'edit'])->name('teams.edit');
 Route::put('/teams/{slug}', [TeamController::class, 'update'])->name('teams.update');
 Route::delete('/teams/{slug}', [TeamController::class, 'destroy'])->name('teams.destroy');
+
+Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
+Route::post('/teams/{team}/add-match', [LeaderboardController::class, 'addMatch'])->name('leaderboard.add-match');
