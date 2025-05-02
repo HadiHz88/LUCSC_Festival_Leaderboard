@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Team;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class TeamController extends Controller
 {
@@ -25,6 +26,18 @@ class TeamController extends Controller
         return view('teams.show', compact('team'));
     }
 
+    public function modal($slug)
+    {
+        // Fetch the team by slug
+        $team = Team::where('slug', $slug)->firstOrFail();
+
+        // Check if we're in edit mode
+        $editMode = request()->has('edit') && request()->query('edit') == '1';
+
+        // Return the modal view with the team data
+        return view('teams.modal', compact('team', 'editMode'));
+    }
+
     public function create()
     {
         // Return the view to create a new team
@@ -41,7 +54,20 @@ class TeamController extends Controller
         ]);
 
         // Create a new team
-        $team = Team::create($request->all());
+        $team = new Team();
+        $team->name = $request->name;
+        $team->slug = $request->slug;
+        $team->points = 0;
+        $team->games_played = 0;
+        $team->wins = 0;
+
+        // Handle logo upload
+        if ($request->hasFile('logo')) {
+            $path = $request->file('logo')->store('team-logos', 'public');
+            $team->logo = $path;
+        }
+
+        $team->save();
 
         // Redirect to the team index with a success message
         return redirect()->route('teams.index')->with('success', 'Team created successfully.');
@@ -69,7 +95,20 @@ class TeamController extends Controller
         $team = Team::where('slug', $slug)->firstOrFail();
 
         // Update the team
-        $team->update($request->all());
+        $team->name = $request->name;
+        $team->slug = $request->slug;
+
+        // Handle logo upload
+        if ($request->hasFile('logo')) {
+            // Delete old logo if exists
+            if ($team->logo) {
+                Storage::disk('public')->delete($team->logo);
+            }
+            $path = $request->file('logo')->store('team-logos', 'public');
+            $team->logo = $path;
+        }
+
+        $team->save();
 
         // Redirect to the team index with a success message
         return redirect()->route('teams.index')->with('success', 'Team updated successfully.');
@@ -79,6 +118,11 @@ class TeamController extends Controller
     {
         // Fetch the team by slug
         $team = Team::where('slug', $slug)->firstOrFail();
+
+        // Delete the team's logo if it exists
+        if ($team->logo) {
+            Storage::disk('public')->delete($team->logo);
+        }
 
         // Delete the team
         $team->delete();
